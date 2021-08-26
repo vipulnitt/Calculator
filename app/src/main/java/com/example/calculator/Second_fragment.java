@@ -36,7 +36,7 @@ public class Second_fragment extends Fragment {
         textView = view.findViewById(R.id.textView2);
       //  textView.setText("Answer of "+MainActivity.string+" is "+ expression.calculate());
         Expression expression = new Expression(string);
-        textView.setText(""+expression.calculate());
+        textView.setText("Expression:"+string+"\nAns: "+expression.calculate());
    return  view;
     }
     public static void edittext(CharSequence data)
