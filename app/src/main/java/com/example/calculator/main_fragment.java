@@ -20,9 +20,10 @@ import org.mariuszgromada.math.mxparser.Expression;
 
 
 public class main_fragment extends Fragment {
-    TextView result;
+    String result="";
+    int temps =0;
     private main_fragmentListener listener;
-    Button b1, b2, b3, b4, b5, b6, b7, b8, b9, sum, diff, div, mul, sqr, sqrroot, eql, b0, b00, clear, del, brac, dot;
+    Button b1, b2, b3, b4, b5, b6, b7, b8, b9, sum, diff, div, mul, sqr, sqrroot, eql, b0, b00, clear, del, brac, dot,sin,cos;
     boolean check = false, bracecheck = false;
 
     public interface main_fragmentListener {
@@ -53,10 +54,11 @@ public class main_fragment extends Fragment {
         sqrroot = view.findViewById(R.id.root);
         clear = view.findViewById(R.id.clear);
         eql = view.findViewById(R.id.equal);
-        result = view.findViewById(R.id.textView);
         del = view.findViewById(R.id.delete);
         brac = view.findViewById(R.id.brac);
         dot = view.findViewById(R.id.bdot);
+        sin= view.findViewById(R.id.sin);
+        cos = view.findViewById(R.id.cos);
         dot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,17 +140,11 @@ public class main_fragment extends Fragment {
         eql.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Expression expression = new Expression(result.getText().toString());
+                Expression expression = new Expression(result);
                 if (check && expression.checkLexSyntax()) {
-                    CharSequence input = result.getText().toString();
+                    CharSequence input = result;
                     listener.onInputSENT(input);
                //     MainActivity.string = result.getText().toString();
-                    Fragment fragment = new Second_fragment();
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.fragment_container2, fragment);
-                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.commit();
                 } else {
                     Toast.makeText(getContext(), "Invalid Expression!", Toast.LENGTH_SHORT).show();
                 }
@@ -169,14 +165,15 @@ public class main_fragment extends Fragment {
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                result.setText("");
+                result="";
+                listener.onInputSENT(result);
                 check = false;
             }
         });
         del.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String temp = result.getText().toString();
+                String temp = result;
                 if (temp.length() > 0) {
                     if (temp.endsWith(")")) {
                         bracecheck = true;
@@ -189,7 +186,19 @@ public class main_fragment extends Fragment {
                     }
                     temp = temp.substring(0, temp.length() - 1);
                     Log.d("vipull", temp);
-                    result.setText(temp);
+                    result = (temp);
+                    Log.d("vipulll",result);
+                    listener.onInputSENT(result);
+                    if(result.length()<=1) {
+                        temps++;
+                    }
+                    if(temps==2)
+                    {
+                        result="";
+                        listener.onInputSENT(result);
+                        temps=0;
+                    }
+
                 }
             }
         });
@@ -216,6 +225,19 @@ public class main_fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 fun("sqr");
+            }
+        });
+        sin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fun("sin");
+                bracecheck = true;
+            }
+        });
+        cos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fun("cos");
                 bracecheck = true;
             }
         });
@@ -223,53 +245,70 @@ public class main_fragment extends Fragment {
     }
 
     void fun(String s) {
-        if (result.getText().toString().length() < 16) {
+        if (result.length() < 16) {
             String[] str = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "00", "."};
             for (int i = 0; i < 12; i++) {
                 if (s.equals(str[i])) {
-                    result.append(str[i]);
+                  result=  result.concat(str[i]);
+                    listener.onInputSENT(result);
                     check = true;
                 }
             }
             if (s.equals("brac")) {
                 if (!bracecheck) {
-                    result.append("(");
+                    result=result.concat("(");
+                    listener.onInputSENT(result);
                     bracecheck = true;
                 } else {
                     bracecheck = false;
-                    result.append(")");
+                  result= result.concat(")");
+                    listener.onInputSENT(result);
                 }
             }
             if (s.equals("sqrt(")) {
-                result.append("sqrt(");
+              result=  result.concat("sqrt(");
+                listener.onInputSENT(result);
+            }
+            if (s.equals("sin")) {
+                result=  result.concat("sin(");
+                listener.onInputSENT(result);
+            }
+            if (s.equals("cos")) {
+                result=  result.concat("cos(");
+                listener.onInputSENT(result);
             }
             if (s.equals("sqr")) {
-                result.append("^2");
+                result=result.concat("^2");
+                listener.onInputSENT(result);
             }
             if (s.equals("sum")) {
                 if (check) {
-                    result.append("+");
+                  result= result.concat("+");
+                    listener.onInputSENT(result);
                     check = false;
                 } else
                     Toast.makeText(getContext(), "Invalid Expression!", Toast.LENGTH_SHORT).show();
             }
             if (s.equals("diff")) {
                 if (check) {
-                    result.append("-");
+                  result= result.concat("-");
+                    listener.onInputSENT(result);
                     check = false;
                 } else
                     Toast.makeText(getContext(), "Invalid Expression!", Toast.LENGTH_SHORT).show();
             }
             if (s.equals("mul")) {
                 if (check) {
-                    result.append("*");
+                  result =  result.concat("*");
+                    listener.onInputSENT(result);
                     check = false;
                 } else
                     Toast.makeText(getContext(), "Invalid Expression!", Toast.LENGTH_SHORT).show();
             }
             if (s.equals("div")) {
                 if (check) {
-                    result.append("/");
+                   result= result.concat("/");
+                    listener.onInputSENT(result);
                     check = false;
                 } else
                     Toast.makeText(getContext(), "Invalid Expression!", Toast.LENGTH_SHORT).show();

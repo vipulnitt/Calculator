@@ -10,13 +10,12 @@ public class MainActivity extends AppCompatActivity implements main_fragment.mai
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                new main_fragment()).commit();
+                new main_fragment()).replace(R.id.fragment_container2,new Second_fragment()).commit();
     }
 
 
     @Override
     public void onInput2SENT(CharSequence input) {
-
     }
 
     @Override

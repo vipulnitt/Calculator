@@ -104,6 +104,32 @@
         app:layout_constraintVertical_bias="0.287" />
 
     <Button
+        android:id="@+id/cos"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:text="cos"
+        android:textSize="8sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.091"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.287" />
+
+    <Button
+        android:id="@+id/sin"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:text="sin"
+        android:textSize="8sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.33"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.287" />
+
+    <Button
         android:id="@+id/clear"
         android:layout_width="60dp"
         android:layout_height="60dp"
@@ -128,6 +154,7 @@
         app:layout_constraintVertical_bias="0.812" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/textView"
         android:layout_width="344dp"
         android:layout_height="50dp"

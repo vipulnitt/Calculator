@@ -1,7 +1,5 @@
 package com.example.calculator;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,8 +19,8 @@ import org.mariuszgromada.math.mxparser.Expression;
 import java.util.ArrayList;
 
 public class Second_fragment extends Fragment {
-    public static String string;
-    TextView textView;
+    public static String string="";
+    static TextView textView,textView1;
     public Second_fragment.Second_fragmentListener listeners;
     public interface Second_fragmentListener {
         void onInput2SENT(CharSequence input);
@@ -35,13 +33,20 @@ public class Second_fragment extends Fragment {
        View view = inflater.inflate(R.layout.fragment_second, container, false);
         textView = view.findViewById(R.id.textView2);
       //  textView.setText("Answer of "+MainActivity.string+" is "+ expression.calculate());
-        Expression expression = new Expression(string);
-        textView.setText("Expression:"+string+"\nAns: "+expression.calculate());
+        textView1= view.findViewById(R.id.textView3);
    return  view;
     }
     public static void edittext(CharSequence data)
     {
         string=data.toString();
+     //   textView.setText(string);
+        textView1.setText(string);
+        Expression expression = new Expression(string);
+        if( expression.checkLexSyntax())
+            textView.setText(""+ expression.calculate());
+        if(string=="")
+            textView.setText("");
+
     }
     @Override
     public void onAttach(@NonNull Context context) {
