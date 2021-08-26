@@ -1,5 +1,6 @@
 package com.example.calculator;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -19,8 +21,15 @@ import org.mariuszgromada.math.mxparser.Expression;
 
 public class main_fragment extends Fragment {
     TextView result;
-    Button b1,b2,b3,b4,b5,b6,b7,b8,b9,sum,diff,div,mul,sqr,sqrroot,eql,b0,b00,clear,del,brac,dot;
-    boolean check=false,bracecheck=false;
+    private main_fragmentListener listener;
+    Button b1, b2, b3, b4, b5, b6, b7, b8, b9, sum, diff, div, mul, sqr, sqrroot, eql, b0, b00, clear, del, brac, dot;
+    boolean check = false, bracecheck = false;
+
+    public interface main_fragmentListener {
+        void onInputSENT(CharSequence input);
+
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -45,21 +54,21 @@ public class main_fragment extends Fragment {
         clear = view.findViewById(R.id.clear);
         eql = view.findViewById(R.id.equal);
         result = view.findViewById(R.id.textView);
-         del = view.findViewById(R.id.delete);
-         brac = view.findViewById(R.id.brac);
-         dot = view.findViewById(R.id.bdot);
+        del = view.findViewById(R.id.delete);
+        brac = view.findViewById(R.id.brac);
+        dot = view.findViewById(R.id.bdot);
         dot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fun(".");
             }
         });
-         b0.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-                 fun("0");
-             }
-         });
+        b0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fun("0");
+            }
+        });
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,17 +139,17 @@ public class main_fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Expression expression = new Expression(result.getText().toString());
-                if(check&&expression.checkLexSyntax())
-                {
-                    MainActivity.string = result.getText().toString();
+                if (check && expression.checkLexSyntax()) {
+                    CharSequence input = result.getText().toString();
+                    listener.onInputSENT(input);
+               //     MainActivity.string = result.getText().toString();
                     Fragment fragment = new Second_fragment();
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.fragment_container, fragment);
+                    fragmentTransaction.replace(R.id.fragment_container2, fragment);
                     fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
-                }
-                else {
+                } else {
                     Toast.makeText(getContext(), "Invalid Expression!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -161,25 +170,22 @@ public class main_fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 result.setText("");
-                check=false;
+                check = false;
             }
         });
         del.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String temp = result.getText().toString();
-                if(temp.length()>0) {
-                    if(temp.endsWith(")"))
-                    {
-                        bracecheck=true;
+                if (temp.length() > 0) {
+                    if (temp.endsWith(")")) {
+                        bracecheck = true;
                     }
-                    if(temp.endsWith("("))
-                    {
-                        bracecheck=false;
+                    if (temp.endsWith("(")) {
+                        bracecheck = false;
                     }
-                    if(temp.endsWith("+")||temp.endsWith("-")||temp.endsWith("/")||temp.endsWith("*"))
-                    {
-                        check=true;
+                    if (temp.endsWith("+") || temp.endsWith("-") || temp.endsWith("/") || temp.endsWith("*")) {
+                        check = true;
                     }
                     temp = temp.substring(0, temp.length() - 1);
                     Log.d("vipull", temp);
@@ -203,22 +209,22 @@ public class main_fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 fun("sqrt(");
-                bracecheck=true;
+                bracecheck = true;
             }
         });
         sqr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fun("sqr");
-                bracecheck=true;
+                bracecheck = true;
             }
         });
-  return  view;
+        return view;
     }
-    void fun(String s)
-    {
-        if(result.getText().toString().length()<16) {
-            String[] str = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "00","."};
+
+    void fun(String s) {
+        if (result.getText().toString().length() < 16) {
+            String[] str = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "00", "."};
             for (int i = 0; i < 12; i++) {
                 if (s.equals(str[i])) {
                     result.append(str[i]);
@@ -235,7 +241,7 @@ public class main_fragment extends Fragment {
                 }
             }
             if (s.equals("sqrt(")) {
-                    result.append("sqrt(");
+                result.append("sqrt(");
             }
             if (s.equals("sqr")) {
                 result.append("^2");
@@ -268,11 +274,23 @@ public class main_fragment extends Fragment {
                 } else
                     Toast.makeText(getContext(), "Invalid Expression!", Toast.LENGTH_SHORT).show();
             }
-        }
-        else Toast.makeText(getContext(), "Limit Exceeded!", Toast.LENGTH_SHORT).show();
+        } else Toast.makeText(getContext(), "Limit Exceeded!", Toast.LENGTH_SHORT).show();
 
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof main_fragmentListener) {
+            listener = (main_fragmentListener) context;
+        } else {
+            throw new RuntimeException(context.toString()+"issue");
+        }
+    }
 
-
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener=null;
+    }
 }
