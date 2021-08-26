@@ -19,7 +19,7 @@ import org.mariuszgromada.math.mxparser.Expression;
 
 public class main_fragment extends Fragment {
     TextView result;
-    Button b1,b2,b3,b4,b5,b6,b7,b8,b9,sum,diff,div,mul,sqr,sqrroot,eql,b0,b00,clear,del,brac;
+    Button b1,b2,b3,b4,b5,b6,b7,b8,b9,sum,diff,div,mul,sqr,sqrroot,eql,b0,b00,clear,del,brac,dot;
     boolean check=false,bracecheck=false;
     @Nullable
     @Override
@@ -47,6 +47,13 @@ public class main_fragment extends Fragment {
         result = view.findViewById(R.id.textView);
          del = view.findViewById(R.id.delete);
          brac = view.findViewById(R.id.brac);
+         dot = view.findViewById(R.id.bdot);
+        dot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fun(".");
+            }
+        });
          b0.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v) {
@@ -211,8 +218,8 @@ public class main_fragment extends Fragment {
     void fun(String s)
     {
         if(result.getText().toString().length()<16) {
-            String[] str = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "00"};
-            for (int i = 0; i < 11; i++) {
+            String[] str = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "00","."};
+            for (int i = 0; i < 12; i++) {
                 if (s.equals(str[i])) {
                     result.append(str[i]);
                     check = true;
